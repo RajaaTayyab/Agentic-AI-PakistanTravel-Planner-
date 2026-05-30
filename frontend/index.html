@@ -1,0 +1,1153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Pakistan Travel Planner — Luxury AI Concierge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+:root {
+  --emerald-deep: #062314;
+  --emerald-mid: #0b3d21;
+  --emerald-light: #165c35;
+  --sage: #a3b899;
+  --gold-warm: #d4af37;
+  --gold-glow: #f3e5ab;
+  --sand-light: #faf8f5;
+  --sand-mid: #f0eae1;
+  --sand-dark: #e3d9cb;
+  --white: #ffffff;
+  --text-primary: #1c1e1b;
+  --text-secondary: #4a5049;
+  --text-muted: #878f84;
+  --text-light: rgba(255, 255, 255, 0.9);
+  --text-light-muted: rgba(255, 255, 255, 0.5);
+  --radius-sm: 12px;
+  --radius-md: 24px;
+  --radius-lg: 32px;
+  --transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--sand-light);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--emerald-deep);
+  position: relative;
+  overflow: hidden;
+  justify-content: center;
+}
+.hero-bg {
+  position: absolute; inset: 0;
+  background-image:
+    radial-gradient(circle at 80% 20%, rgba(22,92,53,0.35) 0%, transparent 50%),
+    radial-gradient(circle at 20% 80%, rgba(212,175,55,0.07) 0%, transparent 60%);
+  z-index: 1;
+}
+#star-canvas {
+  position: absolute; inset: 0;
+  width: 100% !important; height: 100% !important;
+  z-index: 1; pointer-events: none;
+}
+.shooting-stars {
+  position: absolute; inset: 0;
+  z-index: 2; pointer-events: none; overflow: hidden;
+}
+@keyframes shoot {
+  0%   { opacity: 0; transform: rotate(var(--ang, 20deg)) translateX(0); }
+  12%  { opacity: 1; }
+  100% { opacity: 0; transform: rotate(var(--ang, 20deg)) translateX(260px); }
+}
+.shooting-star {
+  position: absolute; height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.95) 50%, transparent 100%);
+  border-radius: 99px; opacity: 0; transform-origin: left center;
+}
+.hero-artwork {
+  position: absolute; right: -10%; bottom: -10%;
+  width: 70%; height: 80%; opacity: 0.06;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 1000'%3E%3Cpath fill='none' stroke='%23ffffff' stroke-width='1.5' d='M0,500 Q250,200 500,500 T1000,500 M0,600 Q250,300 500,600 T1000,600 M0,400 Q250,100 500,400 T1000,400'/%3E%3C/svg%3E");
+  background-size: cover; pointer-events: none; z-index: 2;
+}
+.hero-inner {
+  max-width: 1300px; width: 100%; margin: 0 auto;
+  padding: 4rem 4rem 2rem 6rem;
+  position: relative; z-index: 3;
+  display: flex; flex-direction: column;
+  justify-content: space-between;
+  height: 100%; min-height: 100vh;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
+.hero-kicker {
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: 3rem; animation: fadeIn 1.4s 0.1s ease both;
+}
+.kicker-line { width: 32px; height: 1px; background: var(--gold-warm); }
+.kicker-text {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.3em;
+  text-transform: uppercase; color: var(--gold-warm);
+}
+.hero-hed {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(3.5rem, 7vw, 6.5rem); font-weight: 400;
+  line-height: 1.05; letter-spacing: -0.02em;
+  color: var(--white); margin-bottom: 3rem; max-width: 900px;
+  animation: fadeUp 1.2s 0.25s ease both;
+}
+.hero-hed em { font-style: italic; font-weight: 400; color: rgba(255,255,255,0.38); }
+.hero-hed .accent { color: var(--gold-warm); font-weight: 500; }
+.hero-bottom {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 4rem; border-top: 1px solid rgba(255,255,255,0.1);
+  padding-top: 3rem; margin-top: auto;
+  animation: fadeUp 1.2s 0.45s ease both;
+}
+.hero-desc {
+  font-size: 1.1rem; line-height: 1.85; color: var(--text-light-muted);
+  max-width: 500px; font-weight: 300;
+}
+.discover-btn {
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15);
+  padding: 18px 32px; border-radius: 99px; color: var(--white);
+  font-size: 12px; font-weight: 600; letter-spacing: 0.15em;
+  text-transform: uppercase; cursor: pointer; transition: var(--transition);
+  backdrop-filter: blur(10px); white-space: nowrap;
+}
+.discover-btn:hover { background: var(--white); color: var(--emerald-deep); transform: translateY(-3px); }
+
+/* Main content */
+.site-wrap { max-width: 1200px; margin: 0 auto; padding: 0 4rem 8rem; }
+.section-label {
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: 2.5rem; padding-top: 7rem;
+}
+.section-label-line { width: 24px; height: 1px; background: var(--emerald-light); }
+.section-label-text {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.25em;
+  text-transform: uppercase; color: var(--text-secondary);
+}
+
+.form-card {
+  background: var(--white); border-radius: var(--radius-lg); overflow: hidden;
+  box-shadow: 0 30px 60px rgba(11,61,33,0.04); border: 1px solid rgba(230,220,205,0.6);
+}
+.form-top {
+  padding: 3.5rem 4rem 2.5rem; border-bottom: 1px solid var(--sand-mid);
+  display: flex; align-items: flex-end; justify-content: space-between;
+  flex-wrap: wrap; gap: 2rem;
+}
+.form-top-left h2 {
+  font-family: 'Playfair Display', serif; font-size: 2.2rem;
+  font-weight: 500; letter-spacing: -0.01em;
+  color: var(--emerald-deep); margin-bottom: 0.5rem;
+}
+.form-top-left p { font-size: 14px; color: var(--text-muted); font-weight: 400; }
+.backend-toggle {
+  display: inline-flex; background: var(--sand-mid); border-radius: 99px; padding: 4px;
+}
+.backend-btn {
+  padding: 10px 24px; border: none; border-radius: 99px;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.02em;
+  cursor: pointer; background: transparent; color: var(--text-secondary);
+  transition: var(--transition); font-family: inherit;
+}
+.backend-btn.active {
+  background: var(--white); color: var(--emerald-deep);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+.form-body { padding: 4rem; }
+.dest-container { display: flex; flex-direction: column; gap: 12px; }
+.dest-cards {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px; margin-top: 8px;
+}
+.dest-card {
+  border: 1px solid var(--sand-dark); border-radius: var(--radius-sm);
+  padding: 20px; cursor: pointer; background: var(--sand-light);
+  transition: var(--transition); position: relative;
+  display: flex; flex-direction: column; justify-content: space-between;
+  min-height: 110px;
+}
+.dest-card:hover { border-color: var(--emerald-light); background: var(--white); transform: translateY(-2px); box-shadow: 0 12px 24px rgba(11,61,33,0.03); }
+.dest-card.selected { border-color: var(--emerald-mid); background: rgba(11,61,33,0.02); }
+.dest-card-name { font-size: 15px; font-weight: 600; color: var(--emerald-deep); margin-bottom: 4px; }
+.dest-card-region { font-size: 12px; color: var(--text-muted); font-weight: 400; }
+.dest-card-check {
+  position: absolute; top: 16px; right: 16px;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--emerald-mid); display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: var(--transition); font-size: 11px; color: white;
+}
+.dest-card.selected .dest-card-check { opacity: 1; transform: scale(1.1); }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem 3rem; }
+.form-group { display: flex; flex-direction: column; gap: 10px; }
+.form-group.full { grid-column: 1 / -1; }
+label {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--text-secondary);
+}
+input, select, textarea {
+  border: 1px solid var(--sand-dark); border-radius: var(--radius-sm);
+  padding: 16px 20px; font-size: 14px; font-family: inherit;
+  color: var(--text-primary); background: var(--sand-light);
+  outline: none; transition: var(--transition);
+  appearance: none; -webkit-appearance: none;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--emerald-mid); background: var(--white);
+  box-shadow: 0 0 0 4px rgba(11,61,33,0.06);
+}
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none'%3E%3Cpath d='M4 6l4 4 4-4' stroke='%234a5049' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 20px center;
+  padding-right: 48px; cursor: pointer;
+}
+textarea { resize: vertical; min-height: 120px; line-height: 1.7; }
+.form-divider { grid-column: 1 / -1; border: none; border-top: 1px solid var(--sand-mid); margin: 1rem 0; }
+
+/* Error banner */
+.error-banner {
+  display: none; margin-top: 2rem; padding: 20px 24px;
+  background: #fff5f5; border: 1px solid #fca5a5;
+  border-radius: var(--radius-sm); color: #b91c1c;
+  font-size: 14px; line-height: 1.6;
+}
+.error-banner.visible { display: block; }
+.error-banner strong { display: block; margin-bottom: 4px; font-weight: 600; }
+
+.btn-submit {
+  width: 100%; padding: 20px 32px;
+  background: var(--emerald-deep); color: var(--white);
+  border: none; border-radius: var(--radius-sm);
+  font-size: 13px; font-weight: 600; letter-spacing: 0.15em;
+  text-transform: uppercase; font-family: inherit; cursor: pointer;
+  transition: var(--transition); margin-top: 3rem;
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+}
+.btn-submit:hover { background: var(--emerald-mid); transform: translateY(-2px); box-shadow: 0 20px 40px rgba(11,61,33,0.15); }
+.btn-submit:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+.btn-arrow { font-size: 16px; transition: transform 0.3s ease; }
+.btn-submit:hover .btn-arrow { transform: translateX(4px); }
+
+/* Loader */
+.loader { display: none; padding: 5rem 0; text-align: center; max-width: 600px; margin: 0 auto; }
+.loader.visible { display: block; }
+.progress-track {
+  height: 3px; background: var(--sand-dark); border-radius: 99px;
+  margin-bottom: 3rem; overflow: hidden;
+}
+.progress-fill {
+  height: 100%; width: 0;
+  background: linear-gradient(90deg, var(--emerald-mid), var(--gold-warm));
+  transition: width 0.4s ease;
+}
+.loader-hed {
+  font-family: 'Playfair Display', serif; font-size: 1.8rem;
+  font-style: italic; color: var(--emerald-deep); margin-bottom: 0.75rem;
+}
+.loader-sub { font-size: 14px; color: var(--text-muted); }
+.loader-agents {
+  margin-top: 2.5rem; display: flex; flex-direction: column; gap: 12px;
+  text-align: left; max-width: 460px; margin-left: auto; margin-right: auto;
+}
+.loader-agent-row {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 18px; border-radius: var(--radius-sm);
+  background: var(--white); border: 1px solid var(--sand-mid);
+  transition: var(--transition);
+}
+.loader-agent-row.running { border-color: var(--emerald-light); background: rgba(11,61,33,0.02); }
+.loader-agent-row.done { border-color: var(--sage); }
+.agent-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--sand-dark); flex-shrink: 0; transition: var(--transition);
+}
+.loader-agent-row.running .agent-dot { background: var(--emerald-mid); animation: pulse 1s infinite; }
+.loader-agent-row.done .agent-dot { background: var(--sage); }
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.7; }
+}
+.agent-row-name { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+.agent-row-pattern { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+.agent-row-status { margin-left: auto; font-size: 11px; color: var(--text-muted); letter-spacing: 0.05em; }
+.loader-agent-row.done .agent-row-status { color: var(--emerald-mid); }
+
+/* Results */
+.results { display: none; margin-top: 4rem; }
+.results.visible { display: block; }
+.result-band {
+  background: var(--emerald-deep); border-radius: var(--radius-lg); overflow: hidden;
+  margin-bottom: 3rem; position: relative;
+  box-shadow: 0 30px 60px rgba(6,35,20,0.15);
+}
+.result-band-inner { position: relative; z-index: 2; padding: 4rem; }
+.result-eyebrow {
+  font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase;
+  color: var(--gold-warm); margin-bottom: 1rem;
+}
+.result-hed {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 400;
+  letter-spacing: -0.01em; color: var(--white); line-height: 1.2; margin-bottom: 2rem;
+}
+.result-hed em { font-style: italic; color: rgba(255,255,255,0.5); }
+.result-meta {
+  display: flex; border-top: 1px solid rgba(255,255,255,0.1);
+  padding-top: 2.5rem; flex-wrap: wrap; gap: 3rem;
+}
+.result-meta-col { flex: 1; min-width: 150px; }
+.result-meta-label {
+  font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--text-light-muted); margin-bottom: 8px;
+}
+.result-meta-val { font-size: 16px; color: var(--white); font-weight: 500; }
+
+/* Season tip banner */
+.season-tip {
+  background: linear-gradient(135deg, rgba(212,175,55,0.12), rgba(212,175,55,0.04));
+  border: 1px solid rgba(212,175,55,0.3); border-radius: var(--radius-sm);
+  padding: 18px 24px; margin-bottom: 3rem;
+  display: flex; align-items: flex-start; gap: 14px;
+}
+.season-tip-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.season-tip-text { font-size: 14px; color: var(--text-secondary); line-height: 1.65; }
+.season-tip-text strong { color: var(--emerald-deep); font-weight: 600; }
+
+/* Tabs */
+.tabs-wrap {
+  display: flex; gap: 8px; margin-bottom: -1px;
+  position: relative; z-index: 2; padding-left: 2rem;
+}
+.tab-btn {
+  padding: 18px 32px; border: 1px solid transparent;
+  border-bottom: none; border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.1em;
+  text-transform: uppercase; cursor: pointer; background: transparent;
+  color: var(--text-secondary); font-family: inherit; transition: var(--transition);
+}
+.tab-btn.active { background: var(--white); color: var(--emerald-deep); border-color: rgba(230,220,205,0.6); }
+.tab-btn:hover:not(.active) { color: var(--emerald-mid); background: rgba(255,255,255,0.4); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+.content-box {
+  background: var(--white); border: 1px solid rgba(230,220,205,0.6);
+  border-radius: var(--radius-md); padding: 4rem;
+  box-shadow: 0 20px 50px rgba(11,61,33,0.02);
+}
+.itinerary-text {
+  white-space: pre-wrap; font-size: 16px; line-height: 2;
+  color: var(--text-secondary); font-weight: 400;
+}
+
+/* Budget table */
+.budget-table { width: 100%; border-collapse: collapse; font-size: 15px; }
+.budget-table th {
+  text-align: left; padding: 16px 0;
+  font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--text-muted); font-weight: 600; border-bottom: 1px solid var(--sand-dark);
+}
+.budget-table td { padding: 20px 0; border-bottom: 1px solid var(--sand-mid); color: var(--text-secondary); }
+.budget-table td:last-child { text-align: right; color: var(--text-primary); font-weight: 600; }
+.budget-table th:last-child { text-align: right; }
+.budget-table .total td {
+  border-bottom: none; border-top: 2px solid var(--emerald-deep);
+  font-weight: 600; color: var(--emerald-deep); font-size: 18px; padding-top: 28px;
+}
+
+/* Agent results grid */
+.agents-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.agent-card {
+  background: var(--white); border: 1px solid rgba(230,220,205,0.6);
+  border-radius: var(--radius-md); padding: 2.5rem; overflow: hidden;
+  box-shadow: 0 8px 24px rgba(11,61,33,0.02); position: relative;
+}
+.agent-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--emerald-mid), var(--emerald-light));
+}
+.agent-card-header { margin-bottom: 1.5rem; }
+.agent-card-name {
+  font-size: 16px; font-weight: 600; color: var(--emerald-deep); margin-bottom: 6px;
+}
+.agent-card-meta { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.agent-pattern-badge {
+  display: inline-block; padding: 4px 12px;
+  background: rgba(11,61,33,0.06); border-radius: 99px;
+  font-size: 10px; font-weight: 600; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--emerald-mid);
+}
+.agent-time-badge {
+  font-size: 11px; color: var(--text-muted); letter-spacing: 0.05em;
+}
+.agent-card-status {
+  font-size: 12px; font-weight: 600; letter-spacing: 0.05em;
+  padding: 3px 10px; border-radius: 99px;
+}
+.agent-card-status.success { background: rgba(22,92,53,0.08); color: var(--emerald-mid); }
+.agent-card-status.error { background: rgba(185,28,28,0.08); color: #b91c1c; }
+.agent-card-body {
+  font-size: 13.5px; line-height: 1.85; color: var(--text-secondary);
+  white-space: pre-wrap; max-height: 280px; overflow-y: auto;
+  scrollbar-width: thin; scrollbar-color: var(--sand-dark) transparent;
+}
+.agent-card-body::-webkit-scrollbar { width: 4px; }
+.agent-card-body::-webkit-scrollbar-track { background: transparent; }
+.agent-card-body::-webkit-scrollbar-thumb { background: var(--sand-dark); border-radius: 99px; }
+
+/* Emergency contacts strip */
+.emergency-strip {
+  background: var(--emerald-deep); border-radius: var(--radius-md);
+  padding: 2.5rem 3rem; margin-top: 2rem;
+}
+.emergency-strip h4 {
+  font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--gold-warm); margin-bottom: 1.5rem;
+}
+.emergency-contacts {
+  display: flex; flex-wrap: wrap; gap: 2rem;
+}
+.emergency-item { flex: 1; min-width: 140px; }
+.emergency-label { font-size: 11px; color: var(--text-light-muted); margin-bottom: 4px; }
+.emergency-number { font-size: 20px; font-weight: 600; color: var(--white); letter-spacing: 0.05em; }
+
+/* Footer */
+.footer-strip {
+  margin-top: 8rem; padding: 3rem 0;
+  border-top: 1px solid var(--sand-dark);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 2rem;
+}
+.footer-logo {
+  font-family: 'Playfair Display', serif; font-size: 1.3rem;
+  font-weight: 500; color: var(--emerald-deep);
+}
+.footer-logo em { font-style: italic; font-weight: 400; color: var(--text-muted); }
+.footer-meta { font-size: 12px; color: var(--text-muted); letter-spacing: 0.05em; }
+
+@media(max-width:900px){
+  .hero-inner { padding: 3rem 2rem; }
+  .hero-bottom { flex-direction: column; align-items: flex-start; gap: 2rem; }
+  .site-wrap { padding: 0 2rem 5rem; }
+  .form-top, .form-body, .content-box { padding: 2.5rem; }
+  .form-grid { grid-template-columns: 1fr; gap: 2rem; }
+  .agents-grid { grid-template-columns: 1fr; }
+}
+@media(max-width:600px){
+  .hero-hed { font-size: 2.8rem; }
+  .form-top, .form-body, .content-box { padding: 1.5rem; }
+  .tabs-wrap { padding-left: 0; flex-direction: column; gap: 0; }
+  .tab-btn { border-radius: var(--radius-sm); border: 1px solid var(--sand-mid); margin-bottom: 4px; }
+  .result-band-inner { padding: 2rem; }
+  .emergency-contacts { gap: 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-bg"></div>
+  <canvas id="star-canvas"></canvas>
+  <div class="shooting-stars" id="shooting-stars"></div>
+  <div class="hero-artwork"></div>
+  <div class="hero-inner">
+    <div class="hero-kicker">
+      <div class="kicker-line"></div>
+      <span class="kicker-text">By Tayyab Janjua 231736</span>
+    </div>
+    <h1 class="hero-hed">
+      Curating<br>
+      <em>unforgettable journeys</em><br>
+      <span class="accent">across Pakistan.</span>
+    </h1>
+    <div class="hero-bottom">
+      <p class="hero-desc">Experience a meticulously tailored itinerary designed around your personal aesthetic, from majestic northern peaks to ancient historical valleys.</p>
+      <button class="discover-btn" onclick="document.getElementById('planner-section').scrollIntoView();">Begin Designing</button>
+    </div>
+  </div>
+</section>
+
+<div class="site-wrap" id="planner-section">
+  <div class="section-label">
+    <div class="section-label-line"></div>
+    <span class="section-label-text">Preferences &amp; Identity</span>
+  </div>
+
+  <div class="form-card">
+    <div class="form-top">
+      <div class="form-top-left">
+        <h2>Plan Your Journey</h2>
+        <p>Custom tailored luxury routing engine</p>
+      </div>
+      <div class="backend-toggle">
+        <button class="backend-btn active" id="btn-python" onclick="setBackend('python')">Standard Engine</button>
+        <button class="backend-btn" id="btn-n8n" onclick="setBackend('n8n')">Enterprise Webhook</button>
+      </div>
+    </div>
+
+    <div class="form-body">
+      <div id="n8n-url-group" style="display:none;margin-bottom:2.5rem">
+        <div class="form-group">
+          <label>Webhook URL Endpoint</label>
+          <input type="url" id="n8n-url" placeholder="https://your-instance.cloud/webhook/travel-plan"/>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group full dest-container">
+          <label>Select Destination</label>
+          <select id="destination" style="display:none">
+            <option value="">Select destination…</option>
+            <optgroup label="Northern Territory">
+              <option value="Hunza">Hunza Valley</option>
+              <option value="Skardu">Skardu &amp; K2 Region</option>
+              <option value="Gilgit">Gilgit</option>
+              <option value="Fairy Meadows">Fairy Meadows</option>
+              <option value="Swat Valley">Swat Valley</option>
+              <option value="Chitral">Chitral &amp; Kalash</option>
+              <option value="Naran Kaghan">Naran Kaghan Valley</option>
+            </optgroup>
+            <optgroup label="Cultural Hubs">
+              <option value="Lahore">Lahore</option>
+              <option value="Multan">Multan</option>
+              <option value="Taxila">Taxila Heritage</option>
+            </optgroup>
+            <optgroup label="Capital &amp; Metropolitan">
+              <option value="Islamabad">Islamabad</option>
+              <option value="Murree">Murree Hills</option>
+              <option value="Karachi">Karachi</option>
+            </optgroup>
+          </select>
+          <div class="dest-cards" id="dest-cards">
+            <div class="dest-card" data-value="Hunza" onclick="selectDest('Hunza')">
+              <div class="dest-card-check">✓</div>
+              <div class="dest-card-name">Hunza Valley</div>
+              <div class="dest-card-region">Northern Pakistan</div>
+            </div>
+            <div class="dest-card" data-value="Skardu" onclick="selectDest('Skardu')">
+              <div class="dest-card-check">✓</div>
+              <div class="dest-card-name">Skardu &amp; K2</div>
+              <div class="dest-card-region">Northern Pakistan</div>
+            </div>
+            <div class="dest-card" data-value="Swat Valley" onclick="selectDest('Swat Valley')">
+              <div class="dest-card-check">✓</div>
+              <div class="dest-card-name">Swat Valley</div>
+              <div class="dest-card-region">Northern Pakistan</div>
+            </div>
+            <div class="dest-card" data-value="Lahore" onclick="selectDest('Lahore')">
+              <div class="dest-card-check">✓</div>
+              <div class="dest-card-name">Lahore</div>
+              <div class="dest-card-region">Punjab Culture</div>
+            </div>
+            <div class="dest-card" data-value="Islamabad" onclick="selectDest('Islamabad')">
+              <div class="dest-card-check">✓</div>
+              <div class="dest-card-name">Islamabad</div>
+              <div class="dest-card-region">Capital Region</div>
+            </div>
+            <div class="dest-card" data-value="Karachi" onclick="selectDest('Karachi')">
+              <div class="dest-card-check">✓</div>
+              <div class="dest-card-name">Karachi</div>
+              <div class="dest-card-region">Cosmopolitan South</div>
+            </div>
+          </div>
+        </div>
+
+        <hr class="form-divider">
+
+        <div class="form-group">
+          <label>Departing From</label>
+          <select id="origin">
+            <option value="Islamabad">Islamabad / Rawalpindi</option>
+            <option value="Lahore">Lahore</option>
+            <option value="Karachi">Karachi</option>
+            <option value="Peshawar">Peshawar</option>
+            <option value="Quetta">Quetta</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Travel Curatorial Style</label>
+          <select id="style">
+            <option value="mixed">Balanced — Leisure &amp; Exploration</option>
+            <option value="adventure">High Adventure — Peaks &amp; Expedition</option>
+            <option value="cultural">Heritage &amp; Antiquities</option>
+            <option value="nature">Scenic Wilderness &amp; Sanctuaries</option>
+            <option value="foodie">Gastronomy &amp; Local Culinary</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Start Date</label>
+          <input type="date" id="start-date"/>
+        </div>
+
+        <div class="form-group">
+          <label>End Date</label>
+          <input type="date" id="end-date"/>
+        </div>
+
+        <div class="form-group">
+          <label>Estimated Allocation (PKR)</label>
+          <input type="number" id="budget" placeholder="e.g. 250,000" min="10000" step="5000"/>
+        </div>
+
+        <div class="form-group">
+          <label>Guest Count</label>
+          <input type="number" id="travelers" value="2" min="1" max="20"/>
+        </div>
+
+        <div class="form-group full">
+          <label>Custom Design &amp; Accessibility Needs</label>
+          <textarea id="requirements" placeholder="Describe dietary choices, specific structural pacing preferences, or multi-generational traveling needs..."></textarea>
+        </div>
+      </div>
+
+      <button class="btn-submit" id="submit-btn" onclick="submitPlan()">
+        <span id="btn-text">Generate Tailored Itinerary</span>
+        <div class="btn-arrow">→</div>
+      </button>
+
+      <div class="error-banner" id="error-banner">
+        <strong id="error-title">Connection Error</strong>
+        <span id="error-msg"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="loader" id="loader">
+    <div class="progress-track">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+    <div class="loader-hed">Composing your journey…</div>
+    <div class="loader-sub">Four specialist agents are working in parallel</div>
+    <div class="loader-agents">
+      <div class="loader-agent-row" id="ldr-flight">
+        <div class="agent-dot"></div>
+        <div>
+          <div class="agent-row-name">Flight &amp; Transport Agent</div>
+          <div class="agent-row-pattern">Tool Use Pattern</div>
+        </div>
+        <div class="agent-row-status" id="ldr-flight-status">Waiting…</div>
+      </div>
+      <div class="loader-agent-row" id="ldr-hotel">
+        <div class="agent-dot"></div>
+        <div>
+          <div class="agent-row-name">Hotel &amp; Accommodation Agent</div>
+          <div class="agent-row-pattern">ReAct Pattern</div>
+        </div>
+        <div class="agent-row-status" id="ldr-hotel-status">Waiting…</div>
+      </div>
+      <div class="loader-agent-row" id="ldr-experience">
+        <div class="agent-dot"></div>
+        <div>
+          <div class="agent-row-name">Experience &amp; Activities Agent</div>
+          <div class="agent-row-pattern">Prompt Chaining Pattern</div>
+        </div>
+        <div class="agent-row-status" id="ldr-experience-status">Waiting…</div>
+      </div>
+      <div class="loader-agent-row" id="ldr-safety">
+        <div class="agent-dot"></div>
+        <div>
+          <div class="agent-row-name">Safety &amp; Advisory Agent</div>
+          <div class="agent-row-pattern">Reflection Pattern</div>
+        </div>
+        <div class="agent-row-status" id="ldr-safety-status">Waiting…</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="results" id="results">
+    <div class="result-band">
+      <div class="result-band-inner" id="result-summary"></div>
+    </div>
+
+    <div id="season-tip-wrap"></div>
+
+    <div class="tabs-wrap">
+      <button class="tab-btn active" onclick="showTab('itinerary')">Full Itinerary</button>
+      <button class="tab-btn" onclick="showTab('budget')">Budget Analysis</button>
+      <button class="tab-btn" onclick="showTab('agents')">Agent Intelligence</button>
+    </div>
+
+    <div class="tab-panel active" id="tab-itinerary">
+      <div class="content-box">
+        <div class="itinerary-text" id="itinerary-content"></div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-budget">
+      <div class="content-box">
+        <div id="budget-content"></div>
+        <div id="emergency-contacts-wrap"></div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-agents">
+      <div class="agents-grid" id="agents-grid"></div>
+    </div>
+  </div>
+
+  <div class="footer-strip">
+    <div class="footer-logo">Pakistan<em>Concierge</em></div>
+    <div class="footer-meta">Tayyab Janjua  Gen AI Project</div>
+  </div>
+</div>
+
+<script>
+/* ═══════════════════════════════════════
+   3D STAR FIELD — Three.js
+═══════════════════════════════════════ */
+(function() {
+  const canvas = document.getElementById('star-canvas');
+  const hero   = document.querySelector('.hero');
+  if (!window.THREE) return;
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  renderer.setClearColor(0x000000, 0);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  const scene  = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(70, 1, 0.1, 3000);
+  camera.position.z = 600;
+  function resize() {
+    const w = hero.offsetWidth || window.innerWidth;
+    const h = hero.offsetHeight || window.innerHeight;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  function starSprite(innerColor, outerColor, size) {
+    const c = document.createElement('canvas');
+    c.width = size; c.height = size;
+    const ctx = c.getContext('2d');
+    const half = size / 2;
+    const g = ctx.createRadialGradient(half, half, 0, half, half, half);
+    g.addColorStop(0,   innerColor);
+    g.addColorStop(0.25, innerColor.replace('1)', '0.7)'));
+    g.addColorStop(0.6,  outerColor);
+    g.addColorStop(1,   'rgba(0,0,0,0)');
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, size, size);
+    return new THREE.CanvasTexture(c);
+  }
+  const texWhite = starSprite('rgba(255,255,255,1)', 'rgba(160,200,255,0.08)', 64);
+  const texWarm  = starSprite('rgba(245,235,210,1)', 'rgba(200,180,140,0.06)', 64);
+  const texGold  = starSprite('rgba(212,175,55,1)',  'rgba(212,175,55,0.04)',  64);
+  function makeLayer(count, spread, zRange, sizePx, tex, opacity) {
+    const geo = new THREE.BufferGeometry();
+    const pos  = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      pos[i*3]   = (Math.random() - 0.5) * spread;
+      pos[i*3+1] = (Math.random() - 0.5) * spread;
+      pos[i*3+2] = Math.random() * zRange - zRange * 0.6;
+    }
+    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    const mat = new THREE.PointsMaterial({ map: tex, size: sizePx, transparent: true, opacity, depthWrite: false, sizeAttenuation: true });
+    return new THREE.Points(geo, mat);
+  }
+  const layer0 = makeLayer(2400, 2800, 1600, 1.4, texWhite, 0.7);
+  const layer1 = makeLayer(900,  2000, 1200, 2.6, texWhite, 0.8);
+  const layer2 = makeLayer(280,  1800,  900, 4.2, texWarm,  0.65);
+  const layer3 = makeLayer(70,   1500,  600, 7.0, texGold,  0.55);
+  scene.add(layer0, layer1, layer2, layer3);
+  let mx = 0, my = 0, tx = 0, ty = 0;
+  window.addEventListener('mousemove', e => {
+    mx = (e.clientX / window.innerWidth  - 0.5) * 2;
+    my = (e.clientY / window.innerHeight - 0.5) * 2;
+  });
+  let clock = 0;
+  function animate() {
+    requestAnimationFrame(animate);
+    clock += 0.006;
+    tx += (mx * 20 - tx) * 0.035;
+    ty += (-my * 13 - ty) * 0.035;
+    layer0.rotation.y = clock * 0.007 + tx * 0.0004;
+    layer0.rotation.x = clock * 0.003 + ty * 0.0003;
+    layer1.rotation.y = clock * 0.011 + tx * 0.0007;
+    layer1.rotation.x = clock * 0.004 + ty * 0.0005;
+    layer2.rotation.y = clock * 0.016 + tx * 0.0011;
+    layer2.rotation.x = clock * 0.006 + ty * 0.0008;
+    layer3.rotation.y = clock * 0.022 + tx * 0.0017;
+    layer3.rotation.x = clock * 0.009 + ty * 0.0012;
+    layer3.material.opacity = 0.4 + Math.sin(clock * 1.1) * 0.15;
+    layer2.material.opacity = 0.55 + Math.sin(clock * 0.65 + 1.2) * 0.1;
+    renderer.render(scene, camera);
+  }
+  animate();
+})();
+
+/* ═══════════════════════════════════════
+   SHOOTING STARS
+═══════════════════════════════════════ */
+(function() {
+  const container = document.getElementById('shooting-stars');
+  function spawnStar() {
+    const el = document.createElement('div');
+    el.className = 'shooting-star';
+    const x   = (Math.random() * 70 + 5).toFixed(1);
+    const y   = (Math.random() * 55).toFixed(1);
+    const len = Math.round(Math.random() * 180 + 60);
+    const ang = (Math.random() * 28 + 8).toFixed(1);
+    const dur = (Math.random() * 0.65 + 0.4).toFixed(2);
+    const del = (Math.random() * 0.1).toFixed(2);
+    el.style.cssText = `left:${x}%;top:${y}%;width:${len}px;--ang:${ang}deg;animation:shoot ${dur}s ${del}s ease-out forwards;`;
+    container.appendChild(el);
+    setTimeout(() => el.remove(), (parseFloat(dur) + parseFloat(del)) * 1000 + 200);
+  }
+  [600, 1400, 2600, 3800].forEach(d => setTimeout(spawnStar, d));
+  function schedNext() { spawnStar(); setTimeout(schedNext, Math.random() * 4000 + 1200); }
+  setTimeout(schedNext, 4200);
+})();
+
+/* ═══════════════════════════════════════
+   APP LOGIC
+═══════════════════════════════════════ */
+let currentBackend = 'python';
+
+function setBackend(b) {
+  currentBackend = b;
+  document.getElementById('btn-python').classList.toggle('active', b === 'python');
+  document.getElementById('btn-n8n').classList.toggle('active', b === 'n8n');
+  document.getElementById('n8n-url-group').style.display = b === 'n8n' ? 'block' : 'none';
+}
+
+function selectDest(val) {
+  document.querySelectorAll('.dest-card').forEach(c => c.classList.remove('selected'));
+  const card = document.querySelector(`.dest-card[data-value="${val}"]`);
+  if (card) card.classList.add('selected');
+  document.getElementById('destination').value = val;
+}
+
+function showTab(t) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  const tabs = ['itinerary', 'budget', 'agents'];
+  const btns = document.querySelectorAll('.tab-btn');
+  btns[tabs.indexOf(t)].classList.add('active');
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + t).classList.add('active');
+}
+
+let progressInterval = null;
+function startProgress() {
+  const fill = document.getElementById('progress-fill');
+  let pct = 0;
+  fill.style.width = '0%';
+  progressInterval = setInterval(() => {
+    pct = pct < 85 ? pct + (85 - pct) * 0.04 : pct;
+    fill.style.width = pct + '%';
+  }, 120);
+}
+function finishProgress() {
+  clearInterval(progressInterval);
+  document.getElementById('progress-fill').style.width = '100%';
+}
+
+/* Animate the loader agent rows sequentially */
+const AGENT_IDS = ['flight', 'hotel', 'experience', 'safety'];
+let agentTimers = [];
+function startAgentAnimation() {
+  AGENT_IDS.forEach(id => {
+    document.getElementById('ldr-' + id).className = 'loader-agent-row';
+    document.getElementById('ldr-' + id + '-status').textContent = 'Waiting…';
+  });
+  AGENT_IDS.forEach((id, i) => {
+    const t = setTimeout(() => {
+      const row = document.getElementById('ldr-' + id);
+      row.classList.add('running');
+      document.getElementById('ldr-' + id + '-status').textContent = 'Running…';
+    }, i * 600 + 300);
+    agentTimers.push(t);
+  });
+}
+function markAgentDone(id, timeStr) {
+  const row = document.getElementById('ldr-' + id);
+  if (!row) return;
+  row.classList.remove('running');
+  row.classList.add('done');
+  document.getElementById('ldr-' + id + '-status').textContent = timeStr ? `✓ ${timeStr}` : '✓ Done';
+}
+function clearAgentTimers() { agentTimers.forEach(clearTimeout); agentTimers = []; }
+
+function showError(title, msg) {
+  const banner = document.getElementById('error-banner');
+  document.getElementById('error-title').textContent = title;
+  document.getElementById('error-msg').textContent = msg;
+  banner.classList.add('visible');
+}
+function hideError() {
+  document.getElementById('error-banner').classList.remove('visible');
+}
+
+/* ── Build results from API response ── */
+function renderResults(data, payload) {
+  /* Header band */
+  const days = payload.start_date && payload.end_date
+    ? Math.ceil((new Date(payload.end_date) - new Date(payload.start_date)) / 86400000) + ' Days'
+    : '—';
+  document.getElementById('result-summary').innerHTML = `
+    <div class="result-eyebrow">Your Designed Escape</div>
+    <h2 class="result-hed">Custom Expedition through <em>${payload.destination}</em></h2>
+    <div class="result-meta">
+      <div class="result-meta-col">
+        <div class="result-meta-label">Origin</div>
+        <div class="result-meta-val">${payload.origin_city}</div>
+      </div>
+      <div class="result-meta-col">
+        <div class="result-meta-label">Duration</div>
+        <div class="result-meta-val">${days}</div>
+      </div>
+      <div class="result-meta-col">
+        <div class="result-meta-label">Party Size</div>
+        <div class="result-meta-val">${payload.travelers} Guest${payload.travelers > 1 ? 's' : ''}</div>
+      </div>
+      <div class="result-meta-col">
+        <div class="result-meta-label">Total Budget</div>
+        <div class="result-meta-val">PKR ${payload.budget_pkr.toLocaleString()}</div>
+      </div>
+    </div>`;
+
+  /* Season tip */
+  const tipWrap = document.getElementById('season-tip-wrap');
+  if (data.best_season_tip) {
+    tipWrap.innerHTML = `
+      <div class="season-tip">
+        <div class="season-tip-icon">🌤</div>
+        <div class="season-tip-text"><strong>Season Advisory:</strong> ${escHtml(data.best_season_tip)}</div>
+      </div>`;
+  } else {
+    tipWrap.innerHTML = '';
+  }
+
+  /* Full itinerary */
+  document.getElementById('itinerary-content').textContent =
+    data.final_itinerary || 'No itinerary returned.';
+
+  /* Budget table */
+  let budgetHtml = '<table class="budget-table"><thead><tr><th>Allocation Segment</th><th>Estimated Amount</th></tr></thead><tbody>';
+  if (data.budget_summary && typeof data.budget_summary === 'object') {
+    const bs = data.budget_summary;
+    const entries = Object.entries(bs).filter(([k]) => k.toLowerCase() !== 'total');
+    entries.forEach(([key, val]) => {
+      const label = key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+      const amount = typeof val === 'number' ? 'PKR ' + val.toLocaleString() : String(val);
+      budgetHtml += `<tr><td>${escHtml(label)}</td><td>${escHtml(amount)}</td></tr>`;
+    });
+    const total = bs.total || payload.budget_pkr;
+    budgetHtml += `</tbody><tfoot><tr class="total"><td>Total Estimated Architecture Cost</td><td>PKR ${Number(total).toLocaleString()}</td></tr></tfoot>`;
+  } else {
+    /* Fallback: proportional split */
+    const b = payload.budget_pkr;
+    budgetHtml += `
+      <tr><td>Premium Ground Transport &amp; Logistics</td><td>PKR ${Math.round(b*0.3).toLocaleString()}</td></tr>
+      <tr><td>Boutique Accommodations</td><td>PKR ${Math.round(b*0.45).toLocaleString()}</td></tr>
+      <tr><td>Curated Excursions &amp; Entry Protocols</td><td>PKR ${Math.round(b*0.25).toLocaleString()}</td></tr>
+      </tbody><tfoot><tr class="total"><td>Total Estimated Architecture Cost</td><td>PKR ${b.toLocaleString()}</td></tr></tfoot>`;
+  }
+  budgetHtml += '</table>';
+  document.getElementById('budget-content').innerHTML = budgetHtml;
+
+  /* Emergency contacts */
+  const ecWrap = document.getElementById('emergency-contacts-wrap');
+  const ec = data.emergency_contacts;
+  if (ec && typeof ec === 'object' && Object.keys(ec).length > 0) {
+    let ecHtml = '<div class="emergency-strip"><h4>Emergency Contacts — Pakistan</h4><div class="emergency-contacts">';
+    Object.entries(ec).forEach(([label, num]) => {
+      ecHtml += `<div class="emergency-item"><div class="emergency-label">${escHtml(label)}</div><div class="emergency-number">${escHtml(String(num))}</div></div>`;
+    });
+    ecHtml += '</div></div>';
+    ecWrap.innerHTML = ecHtml;
+  } else {
+    /* Default known numbers */
+    ecWrap.innerHTML = `
+      <div class="emergency-strip">
+        <h4>Emergency Contacts — Pakistan</h4>
+        <div class="emergency-contacts">
+          <div class="emergency-item"><div class="emergency-label">Police</div><div class="emergency-number">15</div></div>
+          <div class="emergency-item"><div class="emergency-label">Rescue</div><div class="emergency-number">1122</div></div>
+          <div class="emergency-item"><div class="emergency-label">Ambulance</div><div class="emergency-number">115</div></div>
+          <div class="emergency-item"><div class="emergency-label">Fire</div><div class="emergency-number">16</div></div>
+        </div>
+      </div>`;
+  }
+
+  /* Agent cards */
+  const agentPatternMap = {
+    flight_agent:     { label: 'Tool Use',       name: 'Flight & Transport Agent' },
+    hotel_agent:      { label: 'ReAct',          name: 'Hotel & Accommodation Agent' },
+    experience_agent: { label: 'Prompt Chaining', name: 'Experience & Activities Agent' },
+    safety_agent:     { label: 'Reflection',      name: 'Safety & Advisory Agent' },
+  };
+  const grid = document.getElementById('agents-grid');
+  grid.innerHTML = '';
+
+  const agentResults = data.agent_results || [];
+  if (agentResults.length === 0) {
+    grid.innerHTML = '<div style="grid-column:1/-1;padding:2rem;color:var(--text-muted);font-size:14px;">No individual agent results returned by the backend.</div>';
+  } else {
+    agentResults.forEach(ar => {
+      const meta = agentPatternMap[ar.agent_name] || { label: 'Agent', name: ar.agent_name };
+      const timeStr = ar.processing_time_seconds != null
+        ? `${parseFloat(ar.processing_time_seconds).toFixed(1)}s`
+        : '';
+      const status = ar.success !== false ? 'success' : 'error';
+      const statusLabel = ar.success !== false ? 'Success' : 'Error';
+      const content = ar.result || ar.output || ar.error || 'No output';
+      grid.innerHTML += `
+        <div class="agent-card">
+          <div class="agent-card-header">
+            <div class="agent-card-name">${escHtml(meta.name)}</div>
+            <div class="agent-card-meta">
+              <span class="agent-pattern-badge">${escHtml(meta.label)}</span>
+              ${timeStr ? `<span class="agent-time-badge">⏱ ${timeStr}</span>` : ''}
+              <span class="agent-card-status ${status}">${statusLabel}</span>
+            </div>
+          </div>
+          <div class="agent-card-body">${escHtml(content)}</div>
+        </div>`;
+
+      /* Mark loader row done */
+      const ldKey = ar.agent_name.replace('_agent', '');
+      markAgentDone(ldKey, timeStr);
+    });
+  }
+
+  document.getElementById('results').classList.add('visible');
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Set min date on both date pickers to today — no past dates allowed
+(function() {
+  const today = new Date().toISOString().split('T')[0];
+  const startInput = document.getElementById('start-date');
+  const endInput   = document.getElementById('end-date');
+
+  // Block past dates
+  startInput.min = today;
+  endInput.min   = today;
+
+  // Set sensible defaults: today + 7 days
+  const defaultEnd = new Date();
+  defaultEnd.setDate(defaultEnd.getDate() + 7);
+  startInput.value = today;
+  endInput.value   = defaultEnd.toISOString().split('T')[0];
+
+  // When start date changes, end date can't be before it
+  startInput.addEventListener('change', () => {
+    endInput.min = startInput.value;
+    if (endInput.value && endInput.value < startInput.value) {
+      endInput.value = startInput.value;
+    }
+  });
+})();
+
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+async function submitPlan() {
+  const dest      = document.getElementById('destination').value;
+  const startDate = document.getElementById('start-date').value;
+  const endDate   = document.getElementById('end-date').value;
+  const budget    = parseInt(document.getElementById('budget').value);
+
+  if (!dest)                { alert('Please select a destination'); return; }
+  if (!startDate || !endDate){ alert('Please select travel dates');  return; }
+  if (!budget || budget < 10000) { alert('Please enter a valid budget (min PKR 10,000)'); return; }
+
+  const payload = {
+    destination: dest,
+    origin_city: document.getElementById('origin').value,
+    start_date: startDate,
+    end_date: endDate,
+    budget_pkr: budget,
+    travelers: parseInt(document.getElementById('travelers').value) || 1,
+    travel_style: document.getElementById('style').value,
+    special_requirements: document.getElementById('requirements').value || null,
+  };
+
+  /* Determine endpoint */
+  let endpoint;
+  if (currentBackend === 'n8n') {
+    endpoint = document.getElementById('n8n-url').value.trim();
+    if (!endpoint) { alert('Please enter your n8n webhook URL'); return; }
+  } else {
+    endpoint = 'http://localhost:8000/plan';
+  }
+
+  /* UI: loading state */
+  hideError();
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  document.getElementById('btn-text').textContent = 'Structuring…';
+  document.getElementById('results').classList.remove('visible');
+  document.getElementById('loader').classList.add('visible');
+  startProgress();
+  startAgentAnimation();
+
+  try {
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      let errMsg = `HTTP ${response.status}`;
+      try { const errBody = await response.json(); errMsg += ': ' + (errBody.detail || JSON.stringify(errBody)); } catch {}
+      throw new Error(errMsg);
+    }
+
+    const data = await response.json();
+
+    finishProgress();
+    /* Mark any un-marked agent rows done */
+    AGENT_IDS.forEach(id => markAgentDone(id, ''));
+
+    setTimeout(() => {
+      clearAgentTimers();
+      document.getElementById('loader').classList.remove('visible');
+      renderResults(data, payload);
+    }, 400);
+
+  } catch (err) {
+    finishProgress();
+    clearAgentTimers();
+    document.getElementById('loader').classList.remove('visible');
+
+    let title = 'Connection Error';
+    let msg = err.message;
+
+    if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
+      title = 'Backend Not Reachable';
+      msg = currentBackend === 'python'
+        ? 'Could not connect to http://localhost:8000. Make sure your FastAPI server is running: uvicorn main:app --reload --port 8000'
+        : 'Could not connect to the n8n webhook URL. Verify the URL and that your n8n workflow is active.';
+    }
+    showError(title, msg);
+  } finally {
+    btn.disabled = false;
+    document.getElementById('btn-text').textContent = 'Generate Tailored Itinerary';
+  }
+}
+</script>
+</body>
+</html>
