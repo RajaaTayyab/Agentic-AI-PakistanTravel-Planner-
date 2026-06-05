@@ -1090,7 +1090,7 @@ async function submitPlan() {
     endpoint = document.getElementById('n8n-url').value.trim();
     if (!endpoint) { alert('Please enter your n8n webhook URL'); return; }
   } else {
-    endpoint = 'http://localhost:8000/plan';
+    endpoint = '/plan';
   }
 
   /* UI: loading state */
